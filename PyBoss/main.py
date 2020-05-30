@@ -1,5 +1,6 @@
 # The task is to help bridge the gap by creating a Python script able to convert 
 # employee records to the required format. 
+
 # Import Modules
 import os
 import csv
