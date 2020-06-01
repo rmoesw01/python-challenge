@@ -63,6 +63,15 @@ with open(csvpath) as csvfile:
 #   Winner: Khan
 #   -------------------------
 
+# Print the analysis to the terminal & Export a text file with the analysis results.
+output = open(output_path, "w")
+
+output.write(f"""
+    Election Results
+    -------------------------
+    Total Votes: {vote_total}
+    -------------------------""")
+
 # Print the analysis to the terminal 
 print(f"""
     Election Results
@@ -74,6 +83,7 @@ for x in range(len(candidates)):
     candidate_percent = int(total_candidate_votes[x])/vote_total
 
     print(f"""    {candidates[x]}: {"{:.3%}".format(candidate_percent)} ({total_candidate_votes[x]})""")
+    output.write(f"""\n    {candidates[x]}: {"{:.3%}".format(candidate_percent)} ({total_candidate_votes[x]})""")
 
 # Calculate The winner of the election based on popular vote.
 winner = candidates[total_candidate_votes.index(max(total_candidate_votes))]
@@ -81,4 +91,8 @@ print(f"""    -------------------------
     Winner: {winner}
     -------------------------""")
 
-# Export a text file with the analysis results.
+output.write(f"""\n    -------------------------
+    Winner: {winner}
+    -------------------------""")
+
+output.close()

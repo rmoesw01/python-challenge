@@ -89,3 +89,14 @@ print(f"""
 """)
 
 # Export a text file with the results.
+output = open(output_path, "w")
+output.write(f"""
+    Financial Analysis
+    ----------------------------
+    Total Months: {num_months}
+    Total: ${net_total}
+    Average Change: ${avg_change}
+    Greatest Increase in Profits: {greatest_increase_month} (${greatest_increase})
+    Greatest Decrease in Profits: {greatest_decrease_month} (${greatest_decrease})
+""")
+output.close()
