@@ -11,6 +11,7 @@
 
 # Import Modules
 import os
+import sys
 
 # Initialize Variables
 sentences = []
@@ -21,13 +22,33 @@ total_letter_count = 0
 total_word_count = 0
 
 # Create path for data file with proper formatting for the operating system
-input_path = os.path.join('.','raw_data','paragraph_3.txt')
+# input_path = os.path.join('.','raw_data','paragraph_3.txt')
+input_file_name = input("Place the file containing the paragraph in the folder called raw_data, then enter the file name here: ")
+input_path = os.path.join('.', 'raw_data', input_file_name)
 
-# open csv file as read only
-input_file = open(input_path, "r")
-# print(input_file.read())
+file_not_found = True
+
+while file_not_found:
+    try:
+        # open csv file as read only
+        input_file = open(input_path, "r")
+        # print(input_file.read())
+    except:
+        print("I could not find that file, please be sure to save the file in the raw_data folder and enter the full filename, including the extension (i.e. .txt).")
+        try_again = input("Would you like to try again (y/n)? ")
+        if try_again == "y":
+            input_file_name = input("Please try again: ")
+            input_path = os.path.join('.', 'raw_data', input_file_name)
+            file_not_found = True
+        else:
+            sys.exit('Thank you for trying PyParagraph')
+    else:
+        file_not_found = False
 
 whole_file = input_file.read()
+
+input_file.close()
+
 sentences = whole_file.split('.')
 
 for sentence in sentences:
@@ -48,8 +69,8 @@ for sentence in sentences:
 
 # print(f"words: {total_word_count}")
 # print(f"letters: {total_letter_count}")
-avg_letter_count = total_letter_count / total_word_count
-avg_sentence_length = total_word_count / sentence_count
+avg_letter_count = round(total_letter_count / total_word_count,2)
+avg_sentence_length = round(total_word_count / sentence_count,2)
 
 print(f"""
 Paragraph Analysis
