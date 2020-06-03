@@ -12,10 +12,11 @@
 # Import Modules
 import os
 import sys
+import re
+import string
 
 # Initialize Variables
 sentences = []
-phrases = []
 words = []
 sentence_count = 0
 total_letter_count = 0
@@ -30,48 +31,73 @@ file_not_found = True
 
 while file_not_found:
     try:
-        # open csv file as read only
+        # try to open csv file as read only
         input_file = open(input_path, "r")
-        # print(input_file.read())
     except:
+        # if the file cannot be found, as if the user would like to try again
         print("I could not find that file, please be sure to save the file in the raw_data folder and enter the full filename, including the extension (i.e. .txt).")
         try_again = input("Would you like to try again (y/n)? ")
         if try_again == "y":
+            # if the user does wish to try again, ask for the filename again
             input_file_name = input("Please try again: ")
             input_path = os.path.join('.', 'raw_data', input_file_name)
-            file_not_found = True
+            file_not_found = True 
         else:
+            # if the user does not wish to try again, exit the program
             sys.exit('Thank you for trying PyParagraph')
     else:
-        file_not_found = False
+        # if the file can be found, exit the loop
+        break
 
+# read in the entire file
 whole_file = input_file.read()
 
+# close the file
 input_file.close()
 
-sentences = whole_file.split('.')
+# divide the file by newline returns
+lines = re.split("\n\n", whole_file)
 
+# check for multiple sentences on the same line
+for line in lines:
+    counter = line.count('.') + line.count('!') + line.count('?')
+    if counter == 1:
+        # this is for paragraphs that have a single sentence per line
+        sentences.append(line)
+    elif counter == 2:
+        # this is for the paragraph that has a single sentence per line, but one of the lines has an abbreviation with a "."
+        sentences.append(line)
+    else:
+        # this is for paragraphs that are entirely on one line
+        sentences = line.split('.')
+
+# break down each sentence
 for sentence in sentences:
-    #print(f"---{sentence}")
+
+    # if the sentence is not blank, then increment the sentence counter
     if len(sentence) > 0:
         sentence_count = sentence_count + 1
-    phrases = sentence.split(', ')
-    for phrase in phrases:
-        #print(phrase)
-        words = phrase.split(' ')
+
+        # strip the punctuation from the sentences
+        simple = sentence.translate(str.maketrans('', '', string.punctuation))
+
+        # split the stripped sentences into the individual words
+        words = simple.split(' ')
+    
+        # count the number of words and the total number of letters in all the words
         for word in words:
-            #print(f"{word}: {len(word)}")
+            # if the word is not blank, then increment the word & letter counters
             if len(word) > 0:
                 total_word_count = total_word_count + 1
                 total_letter_count = total_letter_count + len(word)
-    #print(f"words: {total_word_count}")
-    #print(f"letters: {total_letter_count}")
 
-# print(f"words: {total_word_count}")
-# print(f"letters: {total_letter_count}")
+# calculate the average letter count per word
 avg_letter_count = round(total_letter_count / total_word_count,2)
+
+# calculate the average word count per sentence
 avg_sentence_length = round(total_word_count / sentence_count,2)
 
+# print the analysis to the terminal window
 print(f"""
 Paragraph Analysis
 -----------------
@@ -80,6 +106,16 @@ Approximate Sentence Count: {sentence_count}
 Average Letter Count: {avg_letter_count}
 Average Sentence Length: {avg_sentence_length}
 """)
+
+# Just for fun
+if sentence_count < 5:
+    print("You seem rather simple minded")
+elif (avg_letter_count > 5 and sentence_count < 6):
+    print("You think you're pretty smart, eh?")
+elif (avg_letter_count > 5 and sentence_count >= 6):
+    print("You are quite the chatty one, you do not have to show everyone how smart you are.")
+else:
+    print("You have created some average thoughts")
 
 # As an example, this passage:
 #   “Adam Wayne, the conqueror, with his face flung back and his mane like a lion's, 
