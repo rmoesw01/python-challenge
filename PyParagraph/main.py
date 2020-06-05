@@ -34,7 +34,7 @@ while file_not_found:
         # try to open csv file as read only
         input_file = open(input_path, "r")
     except:
-        # if the file cannot be found, as if the user would like to try again
+        # if the file cannot be found, ask if the user would like to try again
         print("I could not find that file, please be sure to save the file in the raw_data folder and enter the full filename, including the extension (i.e. .txt).")
         try_again = input("Would you like to try again (y/n)? ")
         if try_again == "y":
